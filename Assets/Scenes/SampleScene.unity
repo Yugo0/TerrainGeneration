@@ -312,7 +312,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d20d5cba90f0246858bf5b617d233e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraZoomSpeed: 0.1
+  cameraZoomSpeed: 1
   cameraSpeed: 100
 --- !u!1 &1003142903
 GameObject:

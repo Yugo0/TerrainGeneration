@@ -9,6 +9,7 @@ public class Terrain : MonoBehaviour
 
 	private Mesh mesh;
 	private Transform trans;
+	private MeshCollider meshCollider;
 
 	private const float isolevel = 0f;
 	
@@ -24,6 +25,7 @@ public class Terrain : MonoBehaviour
 	{
 		mesh = GetComponent<MeshFilter>().mesh;
 		trans = GetComponent<Transform>();
+		meshCollider = GetComponent<MeshCollider>();
 
 		// mesh.vertices = list;
 		// mesh.triangles = new int[] { 0, 1, 2 };
@@ -150,6 +152,8 @@ public class Terrain : MonoBehaviour
 
 		mesh.vertices = vertexList.ToArray();
 		mesh.triangles = indexList.ToArray();
+
+		meshCollider.sharedMesh = mesh;
 	}
 
 	private Vector3 getTriangleVertex(Vector3 pos, Vector3 shift1, Vector3 shift2)

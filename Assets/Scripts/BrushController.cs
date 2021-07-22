@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BrushController : MonoBehaviour
 {
+	[SerializeField]
+	private float brushMagnitude = 0.1f;
+
 	private Camera cam;
 
 	void Start()
@@ -18,14 +21,14 @@ public class BrushController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButton(0))
 		{
 			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hit;
 
 			if (Physics.Raycast(ray, out hit, 20))
 			{
-				Debug.Log(hit.point);
+				hit.transform.gameObject.GetComponent<Terrain>().drawTerrain(hit.point, brushMagnitude);
 			}
 		}
 	}

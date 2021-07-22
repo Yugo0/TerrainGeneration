@@ -27,9 +27,6 @@ public class Terrain : MonoBehaviour
 		trans = GetComponent<Transform>();
 		meshCollider = GetComponent<MeshCollider>();
 
-		// mesh.vertices = list;
-		// mesh.triangles = new int[] { 0, 1, 2 };
-
 		voxels = new float[divisionCount * divisionCount * divisionCount][];
 
 		// Voxel initialization
@@ -154,6 +151,8 @@ public class Terrain : MonoBehaviour
 		mesh.triangles = indexList.ToArray();
 
 		meshCollider.sharedMesh = mesh;
+
+		isMeshChanged = false;
 	}
 
 	private Vector3 getTriangleVertex(Vector3 pos, Vector3 shift1, Vector3 shift2)
@@ -166,9 +165,70 @@ public class Terrain : MonoBehaviour
 		return p;
 	}
 
+	public void drawTerrain(Vector3 point, float brushMagnitude)
+	{
+		int startX = (int)(((point.x - brushMagnitude) - (trans.position.x - 0.5f * trans.localScale.x)) * divisionCount);
+		int endX = (int)(((point.x + brushMagnitude) - (trans.position.x - 0.5f * trans.localScale.x)) * divisionCount);
+
+		startX = startX > 0 ? startX : 0;
+		endX = endX < divisionCount ? endX : divisionCount;
+
+		int startY = (int)(((point.y - brushMagnitude) - (trans.position.y - 0.5f * trans.localScale.y)) * divisionCount);
+		int endY = (int)(((point.y + brushMagnitude) - (trans.position.y - 0.5f * trans.localScale.y)) * divisionCount);
+
+		startY = startY > 0 ? startY : 0;
+		endY = endY < divisionCount ? endY : divisionCount;
+
+		int startZ = (int)(((point.z - brushMagnitude) - (trans.position.z - 0.5f * trans.localScale.z)) * divisionCount);
+		int endZ = (int)(((point.z + brushMagnitude) - (trans.position.z - 0.5f * trans.localScale.z)) * divisionCount);
+
+		startZ = startZ > 0 ? startZ : 0;
+		endZ = endZ < divisionCount ? endZ : divisionCount;
+
+		for (int x = startX; x <= endX; x++)
+		{
+			for (int y = startY; y <= endY; y++)
+			{
+				for (int z = startZ; z <= endZ; z++)
+				{
+					float[] voxel = getVoxel(x, y, z);
+					for (int i = 0; i < 8; i++)
+					{
+						if (Vector3.Distance(point, getVoxelPointPosition(x, y, z, i)) < brushMagnitude)
+						{
+							voxel[i] = 1;
+						}
+					}
+				}
+			}
+		}
+
+		isMeshChanged = true;
+	}
+
 	private float[] getVoxel(int x, int y, int z)
 	{
 		return voxels[x * divisionCount * divisionCount + y * divisionCount + z];
+	}
+
+	private Vector3 getVoxelPointPosition(int x, int y, int z, int voxelPoint)
+	{
+		Vector3 pos = new Vector3(trans.position.x + trans.localScale.x * ((float) x / divisionCount - 0.5f),
+				trans.position.y + trans.localScale.y * ((float) y / divisionCount - 0.5f),
+				trans.position.z + trans.localScale.z * ((float) z / divisionCount - 0.5f));
+
+		switch (voxelPoint)
+		{
+			case 0: return pos;
+			case 1: return pos + new Vector3(0f, 0f, trans.localScale.z) / divisionCount;
+			case 2: return pos + new Vector3(trans.localScale.x, 0f, trans.localScale.z) / divisionCount;
+			case 3: return pos + new Vector3(trans.localScale.x, 0f, 0f) / divisionCount;
+			case 4: return pos + new Vector3(0f, trans.localScale.y, 0f) / divisionCount;
+			case 5: return pos + new Vector3(0f, trans.localScale.y, trans.localScale.z) / divisionCount;
+			case 6: return pos + new Vector3(trans.localScale.x, trans.localScale.y, trans.localScale.z) / divisionCount;
+			case 7: return pos + new Vector3(trans.localScale.x, trans.localScale.y, 0f) / divisionCount;
+			default: return pos;
+		}
 	}
 
 	private int[] edgeTable = {

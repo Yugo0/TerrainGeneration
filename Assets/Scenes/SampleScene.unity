@@ -327,6 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d96afdd232251f74893297b09de433b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  brushMagnitude: 0.1
 --- !u!1 &1003142903
 GameObject:
   m_ObjectHideFlags: 0
@@ -519,7 +520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbaa783550984b64699c6b76f609be2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  divisionCount: 8
+  divisionCount: 64
 --- !u!64 &1482042588
 MeshCollider:
   m_ObjectHideFlags: 0

@@ -147,6 +147,8 @@ public class Terrain : MonoBehaviour
 			}
 		}
 
+		mesh.Clear();
+
 		mesh.vertices = vertexList.ToArray();
 		mesh.triangles = indexList.ToArray();
 
@@ -171,19 +173,19 @@ public class Terrain : MonoBehaviour
 		int endX = (int)(((point.x + brushMagnitude) - (trans.position.x - 0.5f * trans.localScale.x)) * divisionCount);
 
 		startX = startX > 0 ? startX : 0;
-		endX = endX < divisionCount ? endX : divisionCount;
+		endX = endX < divisionCount ? endX : divisionCount - 1;
 
 		int startY = (int)(((point.y - brushMagnitude) - (trans.position.y - 0.5f * trans.localScale.y)) * divisionCount);
 		int endY = (int)(((point.y + brushMagnitude) - (trans.position.y - 0.5f * trans.localScale.y)) * divisionCount);
 
 		startY = startY > 0 ? startY : 0;
-		endY = endY < divisionCount ? endY : divisionCount;
+		endY = endY < divisionCount ? endY : divisionCount - 1;
 
 		int startZ = (int)(((point.z - brushMagnitude) - (trans.position.z - 0.5f * trans.localScale.z)) * divisionCount);
 		int endZ = (int)(((point.z + brushMagnitude) - (trans.position.z - 0.5f * trans.localScale.z)) * divisionCount);
 
 		startZ = startZ > 0 ? startZ : 0;
-		endZ = endZ < divisionCount ? endZ : divisionCount;
+		endZ = endZ < divisionCount ? endZ : divisionCount - 1;
 
 		for (int x = startX; x <= endX; x++)
 		{

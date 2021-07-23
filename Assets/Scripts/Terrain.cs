@@ -14,7 +14,6 @@ public class Terrain : MonoBehaviour
 	private const float isolevel = 0f;
 	
 	private float[][] voxels;
-	private bool isMeshChanged = false;
 
 	Vector3[] list = { new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(0, 1, 0) };
 
@@ -48,14 +47,6 @@ public class Terrain : MonoBehaviour
 		}
 
 		updateMesh();
-	}
-
-	void Update()
-	{
-		if (isMeshChanged)
-		{
-			updateMesh();
-		}
 	}
 
 	private void updateMesh()
@@ -153,8 +144,6 @@ public class Terrain : MonoBehaviour
 		mesh.triangles = indexList.ToArray();
 
 		meshCollider.sharedMesh = mesh;
-
-		isMeshChanged = false;
 	}
 
 	private Vector3 getTriangleVertex(Vector3 pos, Vector3 shift1, Vector3 shift2)
@@ -167,7 +156,7 @@ public class Terrain : MonoBehaviour
 		return p;
 	}
 
-	public void drawTerrain(Vector3 point, float brushMagnitude)
+	public void drawTerrain(Vector3 point, float brushMagnitude, float setValue)
 	{
 		int startX = (int)(((point.x - brushMagnitude) - (trans.position.x - 0.5f * trans.localScale.x)) * divisionCount);
 		int endX = (int)(((point.x + brushMagnitude) - (trans.position.x - 0.5f * trans.localScale.x)) * divisionCount);
@@ -198,14 +187,14 @@ public class Terrain : MonoBehaviour
 					{
 						if (Vector3.Distance(point, getVoxelPointPosition(x, y, z, i)) < brushMagnitude)
 						{
-							voxel[i] = 1;
+							voxel[i] = setValue;
 						}
 					}
 				}
 			}
 		}
 
-		isMeshChanged = true;
+		updateMesh();
 	}
 
 	private float[] getVoxel(int x, int y, int z)

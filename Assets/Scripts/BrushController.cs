@@ -28,7 +28,17 @@ public class BrushController : MonoBehaviour
 
 			if (Physics.Raycast(ray, out hit, 20))
 			{
-				hit.transform.gameObject.GetComponent<Terrain>().drawTerrain(hit.point, brushMagnitude);
+				hit.transform.gameObject.GetComponent<Terrain>().drawTerrain(hit.point, brushMagnitude, 1);
+			}
+		}
+		else if (Input.GetMouseButton(1))
+		{
+			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+			RaycastHit hit;
+
+			if (Physics.Raycast(ray, out hit, 20))
+			{
+				hit.transform.gameObject.GetComponent<Terrain>().drawTerrain(hit.point, brushMagnitude, -1);
 			}
 		}
 	}

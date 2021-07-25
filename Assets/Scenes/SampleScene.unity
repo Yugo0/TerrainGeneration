@@ -328,6 +328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   brushMagnitude: 0.1
+  brushSpeed: 10
 --- !u!1 &1482042583
 GameObject:
   m_ObjectHideFlags: 0

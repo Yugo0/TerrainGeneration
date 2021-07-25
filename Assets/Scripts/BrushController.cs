@@ -6,6 +6,10 @@ public class BrushController : MonoBehaviour
 {
 	[SerializeField]
 	private float brushMagnitude = 0.1f;
+	[SerializeField]
+	private float brushSpeed = 10f;
+
+	private float timer = 0f;
 
 	private Camera cam;
 
@@ -23,22 +27,30 @@ public class BrushController : MonoBehaviour
 	{
 		if (Input.GetMouseButton(0))
 		{
-			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
-
-			if (Physics.Raycast(ray, out hit, 20))
-			{
-				hit.transform.gameObject.GetComponent<Terrain>().drawTerrain(hit.point, brushMagnitude, 1);
-			}
+			handleInput(1);
 		}
 		else if (Input.GetMouseButton(1))
 		{
-			Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-			RaycastHit hit;
+			handleInput(-1);
+		}
+		else
+		{
+			timer = 0f;
+		}
+	}
 
-			if (Physics.Raycast(ray, out hit, 20))
+	private void handleInput(float setValue)
+	{
+		Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+
+		if (Physics.Raycast(ray, out hit, 3))
+		{
+			timer += brushSpeed * Time.fixedDeltaTime;
+			if (timer > 1f)
 			{
-				hit.transform.gameObject.GetComponent<Terrain>().drawTerrain(hit.point, brushMagnitude, -1);
+				timer = 0f;
+				hit.transform.gameObject.GetComponent<Terrain>().drawTerrain(hit.point, brushMagnitude, setValue);
 			}
 		}
 	}

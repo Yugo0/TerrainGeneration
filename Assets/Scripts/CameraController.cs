@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
 	private float cameraSpeed = 100f;
 
 	private Vector3 target = new Vector3(0, 0, 0);
-	private float distance = 10f;
+	private float distance = 2f;
 	private float magnitudeY = 89f;
 
 	private Transform cameraTrans;

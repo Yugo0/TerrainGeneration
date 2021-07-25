@@ -26,6 +26,8 @@ public class Terrain : MonoBehaviour
 		trans = GetComponent<Transform>();
 		meshCollider = GetComponent<MeshCollider>();
 
+		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
+
 		voxels = new float[divisionCount * divisionCount * divisionCount][];
 
 		// Voxel initialization
@@ -53,6 +55,8 @@ public class Terrain : MonoBehaviour
 	{
 		vertexList.Clear();
 		indexList.Clear();
+
+		Dictionary<Vector3, int> dict = new Dictionary<Vector3, int>();
 
 		int currentIndex = 0;
 		Vector3[] vertList = new Vector3[12];
@@ -129,12 +133,19 @@ public class Terrain : MonoBehaviour
 
 			for (int i = 0; triTable[cubeIndex][i] != -1; i += 3)
 			{
-				vertexList.Add(vertList[triTable[cubeIndex][i]]);
-				indexList.Add(currentIndex++);
-				vertexList.Add(vertList[triTable[cubeIndex][i + 1]]);
-				indexList.Add(currentIndex++);
-				vertexList.Add(vertList[triTable[cubeIndex][i + 2]]);
-				indexList.Add(currentIndex++);
+				for (int j = 0; j < 3; j++)
+				{
+					if (dict.ContainsKey(vertList[triTable[cubeIndex][i + j]]))
+					{
+						indexList.Add(dict[vertList[triTable[cubeIndex][i + j]]]);
+					}
+					else
+					{
+						dict.Add(vertList[triTable[cubeIndex][i + j]], currentIndex);
+						vertexList.Add(vertList[triTable[cubeIndex][i + j]]);
+						indexList.Add(currentIndex++);
+					}
+				}
 			}
 		}
 
@@ -142,6 +153,8 @@ public class Terrain : MonoBehaviour
 
 		mesh.vertices = vertexList.ToArray();
 		mesh.triangles = indexList.ToArray();
+
+		mesh.RecalculateNormals();
 
 		meshCollider.sharedMesh = mesh;
 	}

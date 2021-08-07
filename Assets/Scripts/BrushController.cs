@@ -50,7 +50,7 @@ public class BrushController : MonoBehaviour
 			if (timer > 1f)
 			{
 				timer = 0f;
-				hit.transform.gameObject.GetComponent<Terrain>().drawTerrain(hit.point, brushMagnitude, setValue);
+				hit.transform.gameObject.GetComponent<TerrainController>().drawTerrain(hit.point, brushMagnitude, setValue);
 			}
 		}
 	}

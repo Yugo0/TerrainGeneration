@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Terrain : MonoBehaviour
+public class TerrainController : MonoBehaviour
 {
 	[SerializeField]
 	private int divisionCount = 8;
@@ -10,6 +10,7 @@ public class Terrain : MonoBehaviour
 	private Mesh mesh;
 	private Transform trans;
 	private MeshCollider meshCollider;
+	private float level;
 
 	private const float isolevel = 0f;
 	
@@ -49,6 +50,11 @@ public class Terrain : MonoBehaviour
 		}
 
 		updateMesh();
+	}
+
+	public void setLevel(float value)
+	{
+		level = value;
 	}
 
 	private void updateMesh()
@@ -233,6 +239,44 @@ public class Terrain : MonoBehaviour
 			case 7: return pos + new Vector3(trans.localScale.x, trans.localScale.y, 0f) / divisionCount;
 			default: return pos;
 		}
+	}
+
+	public void levelTerrain()
+	{
+		int border = (int)(level * (divisionCount - 1));
+
+		for (int i = 0; i < voxels.Length; i++)
+		{
+			voxels[i] = new float[8];
+
+			if (i / divisionCount % divisionCount < border)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					voxels[i][j] = 1f;
+				}
+			}
+			else if (i / divisionCount % divisionCount > border)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					voxels[i][j] = -1f;
+				}
+			}
+			else
+			{
+				voxels[i][0] = 1f;
+				voxels[i][1] = 1f;
+				voxels[i][2] = 1f;
+				voxels[i][3] = 1f;
+				voxels[i][4] = -1f;
+				voxels[i][5] = -1f;
+				voxels[i][6] = -1f;
+				voxels[i][7] = -1f;
+			}
+		}
+
+		updateMesh();
 	}
 
 	private int[] edgeTable = {

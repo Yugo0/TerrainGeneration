@@ -6,6 +6,8 @@ public class TerrainController : MonoBehaviour
 {
 	[SerializeField]
 	private int divisionCount = 8;
+	[SerializeField]
+	private float perlinNoiseStep = 0.05f;
 
 	private Mesh mesh;
 	private Transform trans;
@@ -31,25 +33,12 @@ public class TerrainController : MonoBehaviour
 
 		voxels = new float[divisionCount * divisionCount * divisionCount][];
 
-		// Voxel initialization
-		// TODO - make it random
 		for (int i = 0; i < voxels.Length; i++)
 		{
 			voxels[i] = new float[8];
-			for (int j = 0; j < 8; j++)
-			{
-				voxels[i][j] = -1f;
-			}
-			if (i / divisionCount % divisionCount == 0)
-			{
-				voxels[i][0] = 1f;
-				voxels[i][1] = 1f;
-				voxels[i][2] = 1f;
-				voxels[i][3] = 1f;
-			}
 		}
-
-		updateMesh();
+		
+		randomize();
 	}
 
 	public void setLevel(float value)
@@ -247,8 +236,6 @@ public class TerrainController : MonoBehaviour
 
 		for (int i = 0; i < voxels.Length; i++)
 		{
-			voxels[i] = new float[8];
-
 			if (i / divisionCount % divisionCount < border)
 			{
 				for (int j = 0; j < 8; j++)
@@ -273,6 +260,99 @@ public class TerrainController : MonoBehaviour
 				voxels[i][5] = -1f;
 				voxels[i][6] = -1f;
 				voxels[i][7] = -1f;
+			}
+		}
+
+		updateMesh();
+	}
+
+	public void randomize()
+	{
+		float randNum = Random.value;
+
+		int[][] noise = new int[divisionCount + 1][];
+		for (int x = 0; x <= divisionCount; x++)
+		{
+			noise[x] = new int[divisionCount + 1];
+
+			for (int y = 0; y <= divisionCount; y++)
+			{
+				noise[x][y] = (int)(Mathf.PerlinNoise(x * perlinNoiseStep + randNum, y * perlinNoiseStep + randNum) * divisionCount);
+			}
+		}
+
+		for (int x = 0; x < divisionCount; x++)
+		{
+			for (int y = 0; y < divisionCount; y++)
+			{
+				for (int z = 0; z < divisionCount; z++)
+				{
+					float[] voxel = getVoxel(x, y, z);
+
+					if (noise[x][z] > y)
+					{
+						voxel[0] = 1f;
+						voxel[4] = 1f;
+					}
+					else if (noise[x][z] < y)
+					{
+						voxel[0] = -1f;
+						voxel[4] = -1f;
+					}
+					else
+					{
+						voxel[0] = 1f;
+						voxel[4] = -1f;
+					}
+
+					if (noise[x][z + 1] > y)
+					{
+						voxel[1] = 1f;
+						voxel[5] = 1f;
+					}
+					else if (noise[x][z + 1] < y)
+					{
+						voxel[1] = -1f;
+						voxel[5] = -1f;
+					}
+					else
+					{
+						voxel[1] = 1f;
+						voxel[5] = -1f;
+					}
+
+					if (noise[x + 1][z] > y)
+					{
+						voxel[3] = 1f;
+						voxel[7] = 1f;
+					}
+					else if (noise[x + 1][z] < y)
+					{
+						voxel[3] = -1f;
+						voxel[7] = -1f;
+					}
+					else
+					{
+						voxel[3] = 1f;
+						voxel[7] = -1f;
+					}
+
+					if (noise[x + 1][z + 1] > y)
+					{
+						voxel[2] = 1f;
+						voxel[6] = 1f;
+					}
+					else if (noise[x + 1][z + 1] < y)
+					{
+						voxel[2] = -1f;
+						voxel[6] = -1f;
+					}
+					else
+					{
+						voxel[2] = 1f;
+						voxel[6] = -1f;
+					}
+				}
 			}
 		}
 

@@ -12,7 +12,10 @@ public class TerrainController : MonoBehaviour
 	private Mesh mesh;
 	private Transform trans;
 	private MeshCollider meshCollider;
+	private Material material;
 	private float level;
+	private float top;
+	private float bottom;
 
 	private const float isolevel = 0f;
 	
@@ -28,6 +31,7 @@ public class TerrainController : MonoBehaviour
 		mesh = GetComponent<MeshFilter>().mesh;
 		trans = GetComponent<Transform>();
 		meshCollider = GetComponent<MeshCollider>();
+		material = GetComponent<Renderer>().material;
 
 		mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
@@ -50,6 +54,9 @@ public class TerrainController : MonoBehaviour
 	{
 		vertexList.Clear();
 		indexList.Clear();
+
+		top = -100;
+		bottom = 100;
 
 		Dictionary<Vector3, int> dict = new Dictionary<Vector3, int>();
 
@@ -136,8 +143,19 @@ public class TerrainController : MonoBehaviour
 					}
 					else
 					{
+						Vector3 vertex = vertList[triTable[cubeIndex][i + j]];
+
+						if (vertex.y > top)
+						{
+							top = vertex.y;
+						}
+						if (vertex.y < bottom)
+						{
+							bottom = vertex.y;
+						}
+
 						dict.Add(vertList[triTable[cubeIndex][i + j]], currentIndex);
-						vertexList.Add(vertList[triTable[cubeIndex][i + j]]);
+						vertexList.Add(vertex);
 						indexList.Add(currentIndex++);
 					}
 				}
@@ -152,6 +170,9 @@ public class TerrainController : MonoBehaviour
 		mesh.RecalculateNormals();
 
 		meshCollider.sharedMesh = mesh;
+
+		material.SetFloat("Top", top);
+		material.SetFloat("Bottom", bottom);
 	}
 
 	private Vector3 getTriangleVertex(Vector3 pos, Vector3 shift1, Vector3 shift2)

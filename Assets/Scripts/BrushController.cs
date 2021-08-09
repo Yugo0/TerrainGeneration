@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BrushController : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class BrushController : MonoBehaviour
 	private float brushMagnitude = 0.1f;
 	[SerializeField]
 	private float brushSpeed = 10f;
+	[SerializeField]
+	private Text label;
 
 	private float timer = 0f;
 
@@ -16,11 +19,7 @@ public class BrushController : MonoBehaviour
 	void Start()
 	{
 		cam = gameObject.GetComponent<Camera>();
-	}
-
-	void Update()
-	{
-		
+		label.text = brushMagnitude.ToString();
 	}
 
 	void FixedUpdate()
@@ -37,6 +36,12 @@ public class BrushController : MonoBehaviour
 		{
 			timer = 0f;
 		}
+	}
+
+	public void setBrushMagnitude(float value)
+	{
+		brushMagnitude = value;
+		label.text = brushMagnitude.ToString();
 	}
 
 	private void handleInput(float setValue)
